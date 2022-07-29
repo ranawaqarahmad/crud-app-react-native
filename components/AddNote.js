@@ -1,14 +1,24 @@
-import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableWithoutFeedback , View ,Keyboard } from "react-native";
+import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableWithoutFeedback , View ,Keyboard, TouchableOpacity, Alert } from "react-native";
 import * as Style from "../assets/styles";
 
-const AddNote = () => {
+const AddNote = ({ navigation , ...props}) => {
   return (
     <>
       <ScrollView>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} behaviour="padding">
             <TouchableWithoutFeedback  onPress={Keyboard.dismiss} >
                 <View style={{padding: 20 , justifyContent: 'space-around'}}>
-                    <TextInput  style={[styles.input]} multiline={true} placeholder="Type here..." />
+                    <TextInput  style={[styles.input]} multiline={true} placeholder="Type here..."  value={props.note} onChangeText={(text) => props.setNote(text)} />
+                    <TouchableOpacity style={styles.button} onPress={() => {
+                        if(props.note === ''){
+                            Alert.alert('Please Type Something')
+                        }else{
+                            props.handleNote();
+                            navigation.navigate('Notes')
+                        }
+                    }} >
+                        <Text style={styles.buttonText}>Add</Text>
+                    </TouchableOpacity>
                 </View>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>

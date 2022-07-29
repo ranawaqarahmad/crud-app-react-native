@@ -4,19 +4,23 @@ import {
   View,
   TouchableOpacity,
   TextInput,
+  ScrollView,
 } from "react-native";
 import * as Style from "../assets/styles";
 import * as eva from "@eva-design/eva";
 import { ApplicationProvider, Icon, IconRegistry } from "@ui-kitten/components";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
-const Notes = ({navigation}) => {
+const Notes = ({ navigation , ...props }) => {
   return (
     <View style={[styles.notesContainer]}>
       <View style={styles.headingContainer}>
         <Text style={styles.heading}>Your Notes...</Text>
 
         <View style={{ flexDirection: "row" }}>
-          <TouchableOpacity style={[styles.button, { marginLeft: 40 }]}>
+          <TouchableOpacity
+            style={[styles.button, { marginLeft: 40 }]}
+            onPress={() => navigation.navigate("DeletedNotes")}
+          >
             <IconRegistry icons={EvaIconsPack} />
             <ApplicationProvider {...eva} theme={eva.light}>
               <Icon
@@ -27,7 +31,10 @@ const Notes = ({navigation}) => {
             </ApplicationProvider>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("AddNote")} >
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate("AddNote")}
+          >
             <IconRegistry icons={EvaIconsPack} />
             <ApplicationProvider {...eva} theme={eva.light}>
               <Icon
@@ -42,7 +49,7 @@ const Notes = ({navigation}) => {
 
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Text style={{ fontSize: 18, fontWeight: "700", color: Style.color }}>
-          Total :{" "}
+          Total : {props.notes?.length}
         </Text>
       </View>
 
@@ -55,24 +62,54 @@ const Notes = ({navigation}) => {
           style={[styles.input, { borderWidth: 3 }]}
         />
 
-        <TouchableOpacity
-          style={[styles.searchButton, { width: 50 }]}
-        >
-            <IconRegistry icons={EvaIconsPack} />
-            <ApplicationProvider {...eva} theme={eva.light}>
-                <Icon name="search" fill="white" style={{width: 22, height: 40}} />
-            </ApplicationProvider>
+        <TouchableOpacity style={[styles.searchButton, { width: 50 }]}>
+          <IconRegistry icons={EvaIconsPack} />
+          <ApplicationProvider {...eva} theme={eva.light}>
+            <Icon
+              name="search"
+              fill="white"
+              style={{ width: 22, height: 40 }}
+            />
+          </ApplicationProvider>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.searchButton}>
-            <Text style={styles.searchButtonText}>Clear</Text>
+          <Text style={styles.searchButtonText}>Clear</Text>
         </TouchableOpacity>
       </View>
+
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
+        {props.notes.length === 0 ? (
+          <View style={styles.emptyNoteContainer}>
+            <Text style={styles.emptyNoteContainer}>
+              There is no note yet! Click on the + button to add
+            </Text>
+          </View>
+        ) : (
+          props.notes.map((item, idx) => {
+            return (
+              <View style={styles.item} key={idx}>
+                <View style={styles.note}>
+                  <Text style={styles.index}> {idx + 1} </Text>
+                  <Text style={styles.text}> {item} </Text>
+                </View>
+
+                <TouchableOpacity>
+                    <Text style={styles.delete}>X</Text>
+                </TouchableOpacity>
+              </View>
+            );
+          })
+        )}
+      </ScrollView>
     </View>
   );
 };
 
- const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   notesContainer: {
     paddingTop: 10,
     paddingHorizontal: 20,
@@ -139,7 +176,7 @@ const Notes = ({navigation}) => {
   },
   text: {
     fontWeight: "700",
-    fontSize: "15",
+    fontSize: 15,
   },
   delete: {
     color: Style.color,
