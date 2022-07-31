@@ -10,7 +10,21 @@ import * as Style from "../assets/styles";
 import * as eva from "@eva-design/eva";
 import { ApplicationProvider, Icon, IconRegistry } from "@ui-kitten/components";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
+
 const Notes = ({ navigation , ...props }) => {
+
+
+  const deleteNote = (idx) => {
+    let newArray = [...props.notes];
+    let movedNote = newArray.splice(idx , 1);
+    props.setNotes(newArray);
+    props.setMoveToBin(movedNote);
+
+    let bin  = [movedNote , ...props.moveToBin];
+    props.setMoveToBin(bin)
+  }
+
+
   return (
     <View style={[styles.notesContainer]}>
       <View style={styles.headingContainer}>
@@ -92,14 +106,24 @@ const Notes = ({ navigation , ...props }) => {
           props.notes.map((item, idx) => {
             return (
               <View style={styles.item} key={idx}>
+                <View style={{flexDirection: "row" , justifyContent: "space-between"}}>
                 <View style={styles.note}>
-                  <Text style={styles.index}> {idx + 1} </Text>
+                  <Text style={styles.index}> {idx + 1}. </Text>
                   <Text style={styles.text}> {item} </Text>
                 </View>
 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => deleteNote(idx)} >
                     <Text style={styles.delete}>X</Text>
                 </TouchableOpacity>
+                </View>
+
+                <View style={styles.deleteContainer}>
+                  <Text>{props.date}</Text>
+
+                  <TouchableOpacity>
+                    <Text style={styles.delete}>Edit</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             );
           })
@@ -172,6 +196,7 @@ const styles = StyleSheet.create({
   },
   note: {
     flexDirection: "row",
+    alignItems:"baseline",
     width: "75%",
   },
   text: {

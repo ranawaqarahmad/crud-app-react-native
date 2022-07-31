@@ -10,6 +10,8 @@ const Stack = createNativeStackNavigator();
 const App = () => {
   const [note, setNote] = useState();
   const [notes, setNotes] = useState([]);
+  const [date, setDate] = useState(new Date().toDateString());
+  const [moveToBin, setMoveToBin] = useState([]);
 
   const handleNote = () => {
     let newNote = note;
@@ -22,7 +24,19 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Notes">
-          {(props) => <Notes {...props} notes={notes} setNotes={setNotes} note={note} setNote={setNote} />}
+          {(props) => (
+            <Notes
+              {...props}
+              notes={notes}
+              setNotes={setNotes}
+              note={note}
+              setNote={setNote}
+              date={date}
+              setDate={setDate}
+              moveToBin={moveToBin}
+              setMoveToBin={setMoveToBin}
+            />
+          )}
         </Stack.Screen>
         <Stack.Screen name="AddNote">
           {(props) => (
@@ -35,7 +49,16 @@ const App = () => {
           )}
         </Stack.Screen>
         <Stack.Screen name="DeletedNotes">
-          {(props) => <DeletedNotes {...props} />}
+          {(props) => (
+            <DeletedNotes
+              {...props}
+              moveToBin={moveToBin}
+              setMoveToBin={setMoveToBin}
+              date={date}
+              notes={notes}
+              setNotes={setNotes}
+            />
+          )}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
